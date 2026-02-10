@@ -1,6 +1,6 @@
 {
   "name": "asynq-mcp-server",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Asynq MCP Server",
   "main": "dist/index.js",
   "scripts": {
