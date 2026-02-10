@@ -1,0 +1,42 @@
+{
+  "manifest_version": "0.1",
+  "name": "asynq",
+  "display_name": "Asynq",
+  "version": "1.0.0",
+  "description": "Connects Claude Desktop to Asynq via MCP",
+  "author": {
+    "name": "Asynq Labs",
+    "email": "root@asynq.org"
+  },
+  "homepage": "https://asynq.org",
+  "support": "https://asynq.org/contact",
+  "icon": "assets/icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "ASYNQ_PAT": "${user_config.asynq_pat}",
+        "ASYNQ_URL": "${user_config.asynq_url}"
+      }
+    }
+  },
+  "user_config": {
+    "asynq_pat": {
+      "type": "string",
+      "title": "Personal Access Token",
+      "description": "Your Asynq PAT (generate in Asynq Account Settings)",
+      "required": true,
+      "sensitive": true
+    },
+    "asynq_url": {
+      "type": "string",
+      "title": "Asynq Server URL",
+      "description": "The URL of the Asynq MCP server",
+      "required": true,
+      "default": "https://asynq.org/mcp"
+    }
+  }
+}

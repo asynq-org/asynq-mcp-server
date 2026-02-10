@@ -1,0 +1,38 @@
+name: Release MCP Bundle
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        working-directory: ./asynq-mcpb # Adjust based on repo structure
+        run: bun install
+
+      - name: Build and Bundle
+        working-directory: ./asynq-mcpb
+        # Ensure mcpb CLI is available via bun x or dependency
+        run: |
+          bun run build
+          bun x @anthropic-ai/mcpb build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            asynq-mcpb/asynq.mcpb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
