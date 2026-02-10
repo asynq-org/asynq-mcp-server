@@ -2,7 +2,7 @@
   "manifest_version": "0.1",
   "name": "asynq",
   "display_name": "Asynq",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Connects Claude Desktop to Asynq via MCP",
   "long_description": "Asynq is an async decision system that helps you make better decisions by providing a structured framework for decision-making, collaboration, and long-term memory. With Asynq, you can make decisions asynchronously, collaborate with your team, and store your decisions for future reference.\n\nAsynq MCP Server allows you to use Asynq within Claude Desktop or other compatible LLMs. It provides the following features:\n\n- Create and manage decisions\n- Collaborate with your team on decisions\n- Store your decisions for future reference\n- Access your decisions from anywhere\n\nTo use Asynq MCP Server, you need to create an account on Asynq and generate a Personal Access Token (PAT). You can then use the PAT to authenticate with the MCP server.",
   "author": {
@@ -17,7 +17,9 @@
     "entry_point": "dist/index.js",
     "mcp_config": {
       "command": "node",
-      "args": ["${__dirname}/dist/index.js"],
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
       "env": {
         "ASYNQ_PAT": "${user_config.asynq_pat}",
         "ASYNQ_URL": "${user_config.asynq_url}"
