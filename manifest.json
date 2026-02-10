@@ -2,7 +2,7 @@
   "manifest_version": "0.1",
   "name": "asynq",
   "display_name": "Asynq",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Connects Claude Desktop to Asynq via MCP",
   "author": {
     "name": "Asynq Labs",
@@ -16,7 +16,9 @@
     "entry_point": "dist/index.js",
     "mcp_config": {
       "command": "node",
-      "args": ["${__dirname}/dist/index.js"],
+      "args": [
+        "${__dirname}/dist/index.js"
+      ],
       "env": {
         "ASYNQ_PAT": "${user_config.asynq_pat}",
         "ASYNQ_URL": "${user_config.asynq_url}"
