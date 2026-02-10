@@ -19,19 +19,17 @@ jobs:
           bun-version: latest
 
       - name: Install Dependencies
-        working-directory: ./asynq-mcp-server
         run: bun install
 
       - name: Build and Bundle
-        working-directory: ./asynq-mcp-server
         run: |
           bun run build
-          bun x @anthropic-ai/mcpb build
+          bun run bundle
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            asynq-mcp-server/asynq.mcpb
+            asynq.mcpb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,7 +2,7 @@
   "manifest_version": "0.1",
   "name": "asynq",
   "display_name": "Asynq",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Connects Claude Desktop to Asynq via MCP",
   "author": {
     "name": "Asynq Labs",
