@@ -1,0 +1,83 @@
+name: Auto Release MCP Bundle
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**"
+      - "!.github/workflows/**"
+      - "!README.md"
+      - "!.gitignore"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    # Avoid loop if the commit was made by the bot
+    if: "!contains(github.event.head_commit.message, 'chore(release):')"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for git history if needed, but mainly for pushing back
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Increment Version
+        id: version
+        run: |
+          # Read current version
+          CURRENT_VERSION=$(bun -e "console.log(require('./package.json').version)")
+          echo "Current version: $CURRENT_VERSION"
+
+          # Increment Patch Version (simple approach using semver logic in Bun)
+          NEW_VERSION=$(bun -e "const [M, m, p] = '$CURRENT_VERSION'.split('.').map(Number); console.log(\`\${M}.\${m}.\${p + 1}\`)")
+          echo "New version: $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+          # Update package.json
+          bun -e "const fs = require('fs'); const pkg = require('./package.json'); pkg.version = '$NEW_VERSION'; fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n')"
+
+          # Update manifest.json
+          bun -e "const fs = require('fs'); const m = require('./manifest.json'); m.version = '$NEW_VERSION'; fs.writeFileSync('./manifest.json', JSON.stringify(m, null, 2) + '\n')"
+
+      - name: Install Dependencies
+        run: bun install
+
+      - name: Build and Bundle
+        run: |
+          bun run build
+          bun run bundle
+
+      - name: Commit and Push Version Bump
+        run: |
+          git add package.json manifest.json
+          # Skip CI check to prevent infinite loop
+          git commit -m "chore(release): bump version to ${{ steps.version.outputs.version }} [skip ci]"
+          git push
+
+          # Tag the release
+          git tag v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          files: |
+            asynq.mcpb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
