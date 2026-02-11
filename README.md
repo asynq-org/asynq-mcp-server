@@ -12,6 +12,55 @@ It acts as a bridge/proxy between your MCP Client (like Claude Desktop) and the 
 
 ---
 
+## Usage
+
+### Connecting to Claude Desktop
+
+1.  Make sure you have [Claude Desktop](https://claude.ai/download) installed.
+2.  Open your `claude_desktop_config.json` (usually in `~/Library/Application Support/Claude/` on macOS).
+3.  Add the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "asynq": {
+      "command": "npx",
+      "args": ["-y", "asynq-mcp-server"],
+      "env": {
+        "ASYNQ_API_Key": "YOUR_PAT_TOKEN"
+      }
+    }
+  }
+}
+```
+
+### Agent Guidelines
+
+To ensure the best experience, the AI agent (Claude) should follow these guidelines when interacting with Asynq. These are also available via the `asynq://guidelines` resource.
+
+#### 1. Decision Linking
+
+- **ALWAYS** provide a direct link to any decision you reference, create, or modify.
+- **Format**: `https://asynq.org/d/{decision_id}`
+
+#### 2. Finalizing Decisions
+
+- **Revisits are Critical**: When a user asks to finalize a decision, **ALWAYS check if they want to schedule a revisit**.
+- **Ask Explicitly**: If the user didn't mention a revisit date, ask: _"Would you like to schedule a revisit for this decision (e.g., in 3 months) to verify it's still valid?"_
+
+#### 3. Creating Drafts
+
+- **Capture Context**: When creating a draft, summarize the ENTIRE context in the `context_markdown` field.
+- **Don't be Lazy**: Do not just say "As discussed". Include the pros/cons, constraints, and key arguments raised in the chat.
+- **Variants**: If specific options were discussed, create them as variants immediately.
+
+#### 4. Tone & Style
+
+- **Objective**: Asynq is a system of record. Be professional, concise, and objective.
+- **No Fluff**: Avoid "Here is the decision..." preambles date context. Just state the context.
+
+---
+
 ## Architecture
 
 This server is designed as a **lightweight proxy**.
